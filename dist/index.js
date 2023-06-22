@@ -337,6 +337,7 @@ class IssuesProcessor {
                     repo: github_1.context.repo.repo,
                     per_page: 100,
                     direction: 'asc',
+                    state: 'all',
                     page
                 });
                 (_a = this.statistics) === null || _a === void 0 ? void 0 : _a.incrementFetchedItemsCount(issueResult.data.length);

@@ -308,6 +308,7 @@ export class IssuesProcessor {
         repo: context.repo.repo,
         per_page: 100,
         direction: 'asc',
+        state: 'all',
         page
       });
       this.statistics?.incrementFetchedItemsCount(issueResult.data.length);
