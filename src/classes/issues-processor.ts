@@ -264,10 +264,10 @@ export class IssuesProcessor {
         await this._askForFeedback(issue, feedbackMessage, feedbackLabel);
         issue.askedForFeedback = true; // This issue is now considered stale
         issue.markedStaleThisRun = true;
-        issueLogger.info(`This $$type is now stale`);
+        issueLogger.info(`This $$type is now asking for feedback`);
       } else {
         issueLogger.info(
-          `This $$type should not be marked as stale based on the option ${issueLogger.createOptionLink(
+          `This $$type should not be marked as asking for feedback based on the option ${issueLogger.createOptionLink(
             this._getDaysBeforeFeedbackOptionName(issue)
           )} (${LoggerService.cyan(daysBeforeFeedback)})`
         );
@@ -383,7 +383,7 @@ export class IssuesProcessor {
   ): Promise<void> {
     const issueLogger: IssueLogger = new IssueLogger(issue);
 
-    issueLogger.info(`Marking this $$type as stale`);
+    issueLogger.info(`Marking this $$type for feedback`);
     this.staleIssues.push(issue);
 
     // if the issue is being marked stale, the updated date should be changed to right now

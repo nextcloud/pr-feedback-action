@@ -245,6 +245,11 @@ class IssuesProcessor {
                 IssuesProcessor._endIssueProcessing(issue);
                 return; // Don't process locked issues
             }
+            if (!issue.isPullRequest) {
+                issueLogger.info(`Skipping this $$type because it is not a pull request`);
+                IssuesProcessor._endIssueProcessing(issue);
+                return; // Don't process pull request issues
+            }
             issueLogger.info(`Days before feedback: ${logger_service_1.LoggerService.cyan(daysBeforeFeedback)}`);
             const shouldAskForFeedback = (0, should_mark_when_stale_1.shouldMarkWhenStale)(daysBeforeFeedback);
             if (this.options.startDate) {
@@ -290,10 +295,10 @@ class IssuesProcessor {
                     yield this._askForFeedback(issue, feedbackMessage, feedbackLabel);
                     issue.askedForFeedback = true; // This issue is now considered stale
                     issue.markedStaleThisRun = true;
-                    issueLogger.info(`This $$type is now stale`);
+                    issueLogger.info(`This $$type is now asking for feedback`);
                 }
                 else {
-                    issueLogger.info(`This $$type should not be marked as stale based on the option ${issueLogger.createOptionLink(this._getDaysBeforeFeedbackOptionName(issue))} (${logger_service_1.LoggerService.cyan(daysBeforeFeedback)})`);
+                    issueLogger.info(`This $$type should not be marked as asking for feedback based on the option ${issueLogger.createOptionLink(this._getDaysBeforeFeedbackOptionName(issue))} (${logger_service_1.LoggerService.cyan(daysBeforeFeedback)})`);
                 }
             }
             IssuesProcessor._endIssueProcessing(issue);
@@ -330,7 +335,6 @@ class IssuesProcessor {
                 const issueResult = yield this.client.rest.issues.listForRepo({
                     owner: github_1.context.repo.owner,
                     repo: github_1.context.repo.repo,
-                    state: 'open',
                     per_page: 100,
                     direction: 'asc',
                     page
@@ -393,7 +397,7 @@ class IssuesProcessor {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const issueLogger = new issue_logger_1.IssueLogger(issue);
-            issueLogger.info(`Marking this $$type as stale`);
+            issueLogger.info(`Marking this $$type for feedback`);
             this.staleIssues.push(issue);
             // if the issue is being marked stale, the updated date should be changed to right now
             // so that close calculations work correctly
@@ -1314,7 +1318,7 @@ function _getAndValidateArgs() {
         enableStatistics: core.getInput('enable-statistics') === 'true',
         startDate: core.getInput('start-date') !== ''
             ? core.getInput('start-date')
-            : undefined,
+            : '2023-05-01',
         exemptDraftPr: core.getInput('exempt-draft-pr') === 'true'
     };
     for (const numberInput of ['days-before-feedback']) {
