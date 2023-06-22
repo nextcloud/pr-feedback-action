@@ -19,7 +19,7 @@ export class Issue implements IIssue {
   readonly locked: boolean;
   readonly milestone?: IMilestone | null;
   readonly assignees: Assignee[];
-  isStale: boolean;
+  askedForFeedback: boolean;
   markedStaleThisRun: boolean;
   operations = new Operations();
   private readonly _options: IIssuesProcessorOptions;
@@ -39,7 +39,7 @@ export class Issue implements IIssue {
     this.locked = issue.locked;
     this.milestone = issue.milestone;
     this.assignees = issue.assignees || [];
-    this.isStale = isLabeled(this, this.staleLabel);
+    this.askedForFeedback = isLabeled(this, this.feedbackLabel);
     this.markedStaleThisRun = false;
   }
 
@@ -47,7 +47,7 @@ export class Issue implements IIssue {
     return isPullRequest(this);
   }
 
-  get staleLabel(): string {
+  get feedbackLabel(): string {
     return this._getStaleLabel();
   }
 
@@ -56,9 +56,7 @@ export class Issue implements IIssue {
   }
 
   private _getStaleLabel(): string {
-    return this.isPullRequest
-      ? this._options.stalePrLabel
-      : this._options.staleIssueLabel;
+    return this._options.feedbackLabel;
   }
 }
 

@@ -174,7 +174,7 @@ describe('Issue', (): void => {
       it('should set the isStale to false', (): void => {
         expect.assertions(1);
 
-        expect(issue.isStale).toStrictEqual(false);
+        expect(issue.askedForFeedback).toStrictEqual(false);
       });
     });
 
@@ -192,7 +192,7 @@ describe('Issue', (): void => {
       it('should set the isStale to true', (): void => {
         expect.assertions(1);
 
-        expect(issue.isStale).toStrictEqual(true);
+        expect(issue.askedForFeedback).toStrictEqual(true);
       });
     });
   });
@@ -239,7 +239,7 @@ describe('Issue', (): void => {
       it('should return the issue stale label', (): void => {
         expect.assertions(1);
 
-        const result = issue.staleLabel;
+        const result = issue.feedbackLabel;
 
         expect(result).toStrictEqual('dummy-stale-issue-label');
       });
@@ -254,7 +254,7 @@ describe('Issue', (): void => {
       it('should return the pull request stale label', (): void => {
         expect.assertions(1);
 
-        const result = issue.staleLabel;
+        const result = issue.feedbackLabel;
 
         expect(result).toStrictEqual('dummy-stale-pr-label');
       });

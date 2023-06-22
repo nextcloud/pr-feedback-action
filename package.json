@@ -1,8 +1,8 @@
 {
-  "name": "stale-action",
-  "version": "7.0.0",
+  "name": "pr-feedback-action",
+  "version": "1.0.0",
   "private": true,
-  "description": "Marks old issues and PRs as stale",
+  "description": "Asks for feedback on PRs",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc --project tsconfig.app.json && ncc build",
@@ -12,11 +12,8 @@
     "lint:fix": "eslint --config ./.eslintrc.js \"**/*.ts\" --fix",
     "lint:all": "npm run format-check && npm run lint",
     "lint:all:fix": "npm run format && npm run lint:fix",
-    "test": "jest --config ./jest.config.js",
-    "test:only-errors": "jest --reporters jest-silent-reporter --silent",
-    "test:watch": "jest --watch --notify --expand",
-    "all": "npm run format && npm run lint && npm run build && npm test",
-    "all:ci": "npm run format && npm run lint && npm run build && npm run test:only-errors",
+    "all": "npm run format && npm run lint && npm run build",
+    "all:ci": "npm run format && npm run lint && npm run build",
     "prerelease": "npm run build",
     "release": "standard-version",
     "release:dry-run": "standard-version --dry-run"
