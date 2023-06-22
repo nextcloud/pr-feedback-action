@@ -31,7 +31,7 @@ function _getAndValidateArgs(): IIssuesProcessorOptions {
     startDate:
       core.getInput('start-date') !== ''
         ? core.getInput('start-date')
-        : undefined,
+        : '2023-05-01',
     exemptDraftPr: core.getInput('exempt-draft-pr') === 'true'
   };
 
