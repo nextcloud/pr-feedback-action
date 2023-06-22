@@ -174,6 +174,12 @@ export class IssuesProcessor {
       return; // Don't process locked issues
     }
 
+    if (!issue.isPullRequest) {
+      issueLogger.info(`Skipping this $$type because it is not a pull request`);
+      IssuesProcessor._endIssueProcessing(issue);
+      return; // Don't process pull request issues
+    }
+
     issueLogger.info(
       `Days before feedback: ${LoggerService.cyan(daysBeforeFeedback)}`
     );
@@ -300,7 +306,6 @@ export class IssuesProcessor {
       const issueResult = await this.client.rest.issues.listForRepo({
         owner: context.repo.owner,
         repo: context.repo.repo,
-        state: 'open',
         per_page: 100,
         direction: 'asc',
         page
