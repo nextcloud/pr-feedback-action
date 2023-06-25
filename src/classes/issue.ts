@@ -9,6 +9,7 @@ import {IsoDateString} from '../types/iso-date-string';
 import {Operations} from './operations';
 
 export class Issue implements IIssue {
+  readonly user: string | undefined;
   readonly title: string;
   readonly number: number;
   created_at: IsoDateString;
@@ -41,6 +42,7 @@ export class Issue implements IIssue {
     this.assignees = issue.assignees || [];
     this.askedForFeedback = isLabeled(this, this.feedbackLabel);
     this.markedStaleThisRun = false;
+    this.user = typeof issue.user === 'string'? issue.user : issue.user?.login;
   }
 
   get isPullRequest(): boolean {

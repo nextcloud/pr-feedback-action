@@ -37,6 +37,14 @@ inputs:
     description: 'Display some statistics at the end regarding the stale workflow (only when the logs are enabled).'
     default: 'true'
     required: false
+  exempt-labels:
+    description: 'The labels that mean a pr is exempt from asking for feedback. Separate multiple labels with commas (eg. "label1,label2").'
+    default: ''
+    required: false
+  exempt-authors:
+    description: 'The authors which exempt a pull request from being asked for feedback. Separate multiple authors with commas (eg. "user1,user2").'
+    default: ''
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'

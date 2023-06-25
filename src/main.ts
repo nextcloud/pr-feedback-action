@@ -32,7 +32,9 @@ function _getAndValidateArgs(): IIssuesProcessorOptions {
       core.getInput('start-date') !== ''
         ? core.getInput('start-date')
         : '2023-05-01',
-    exemptDraftPr: core.getInput('exempt-draft-pr') === 'true'
+    exemptDraftPr: core.getInput('exempt-draft-pr') === 'true',
+    exemptLabels: core.getInput('exempt-labels'),
+    exemptAuthors: core.getInput('exempt-authors'),
   };
 
   for (const numberInput of ['days-before-feedback']) {

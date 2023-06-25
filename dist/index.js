@@ -62,6 +62,7 @@ const is_pull_request_1 = __nccwpck_require__(5400);
 const operations_1 = __nccwpck_require__(7957);
 class Issue {
     constructor(options, issue) {
+        var _a;
         this.operations = new operations_1.Operations();
         this._options = options;
         this.title = issue.title;
@@ -76,6 +77,7 @@ class Issue {
         this.assignees = issue.assignees || [];
         this.askedForFeedback = (0, is_labeled_1.isLabeled)(this, this.feedbackLabel);
         this.markedStaleThisRun = false;
+        this.user = typeof issue.user === 'string' ? issue.user : (_a = issue.user) === null || _a === void 0 ? void 0 : _a.login;
     }
     get isPullRequest() {
         return (0, is_pull_request_1.isPullRequest)(this);
@@ -160,6 +162,8 @@ const stale_operations_1 = __nccwpck_require__(5080);
 const statistics_1 = __nccwpck_require__(3334);
 const logger_service_1 = __nccwpck_require__(1973);
 const plugin_retry_1 = __nccwpck_require__(6298);
+const words_to_list_1 = __nccwpck_require__(1883);
+const is_labeled_1 = __nccwpck_require__(6792);
 /***
  * Handle processing of issues for staleness/closure.
  */
@@ -274,6 +278,20 @@ class IssuesProcessor {
             }
             else {
                 issueLogger.info(`This $$type does not include a feedback label`);
+            }
+            const exemptLabels = (0, words_to_list_1.wordsToList)(this.options.exemptLabels);
+            const hasExemptLabel = exemptLabels.some((exemptLabel) => (0, is_labeled_1.isLabeled)(issue, exemptLabel));
+            if (hasExemptLabel) {
+                issueLogger.info(`Skipping this $$type because it contains an exempt label, see ${issueLogger.createOptionLink(option_1.Option.ExemptLabels)} for more details`);
+                IssuesProcessor._endIssueProcessing(issue);
+                return; // Don't process exempt issues
+            }
+            const exemptAuthors = (0, words_to_list_1.wordsToList)(this.options.exemptAuthors);
+            const isExemptAuthor = exemptAuthors.some(exemptAuthor => exemptAuthor === issue.user);
+            if (isExemptAuthor) {
+                issueLogger.info(`Skipping this $$type because its author is an exempt author, see ${issueLogger.createOptionLink(option_1.Option.ExemptAuthors)} for more details`);
+                IssuesProcessor._endIssueProcessing(issue);
+                return; // Don't process exempt issues
             }
             // Ignore draft PR
             // Note that this check is so far below because it cost one read operation
@@ -1048,9 +1066,10 @@ var Option;
     Option["StaleIssueLabel"] = "stale-issue-label";
     Option["CloseIssueLabel"] = "close-issue-label";
     Option["ExemptIssueLabels"] = "exempt-issue-labels";
+    Option["ExemptAuthors"] = "exempt-authors";
     Option["StalePrLabel"] = "stale-pr-label";
     Option["ClosePrLabel"] = "close-pr-label";
-    Option["ExemptPrLabels"] = "exempt-pr-labels";
+    Option["ExemptLabels"] = "exempt-labels";
     Option["OnlyLabels"] = "only-labels";
     Option["OnlyIssueLabels"] = "only-issue-labels";
     Option["OnlyPrLabels"] = "only-pr-labels";
@@ -1254,6 +1273,40 @@ exports.shouldMarkWhenStale = shouldMarkWhenStale;
 
 /***/ }),
 
+/***/ 1883:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.wordsToList = void 0;
+/**
+ * @description
+ * Transform a string of comma separated words
+ * to an array of words
+ *
+ * @example
+ * wordsToList('label') => ['label']
+ * wordsToList('label,label') => ['label', 'label']
+ * wordsToList('kebab-label') => ['kebab-label']
+ * wordsToList('kebab%20label') => ['kebab%20label']
+ * wordsToList('label with words') => ['label with words']
+ *
+ * @param {Readonly<string>} words A string of comma separated words
+ *
+ * @return {string[]} A list of words
+ */
+function wordsToList(words) {
+    if (!words.length) {
+        return [];
+    }
+    return words.split(',').map((word) => word.trim());
+}
+exports.wordsToList = wordsToList;
+
+
+/***/ }),
+
 /***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -1320,7 +1373,9 @@ function _getAndValidateArgs() {
         startDate: core.getInput('start-date') !== ''
             ? core.getInput('start-date')
             : '2023-05-01',
-        exemptDraftPr: core.getInput('exempt-draft-pr') === 'true'
+        exemptDraftPr: core.getInput('exempt-draft-pr') === 'true',
+        exemptLabels: core.getInput('exempt-labels'),
+        exemptAuthors: core.getInput('exempt-authors'),
     };
     for (const numberInput of ['days-before-feedback']) {
         if (isNaN(parseFloat(core.getInput(numberInput)))) {
