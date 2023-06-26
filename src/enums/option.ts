@@ -9,6 +9,7 @@ export enum Option {
   CloseIssueLabel = 'close-issue-label',
   ExemptIssueLabels = 'exempt-issue-labels',
   ExemptAuthors = 'exempt-authors',
+  ExemptBots = 'exempt-bots',
   StalePrLabel = 'stale-pr-label',
   ClosePrLabel = 'close-pr-label',
   ExemptLabels = 'exempt-labels',

@@ -259,6 +259,18 @@ export class IssuesProcessor {
       return; // Don't process exempt issues
     }
 
+    const exemptBots = this.options.exemptBots;
+
+    if (exemptBots && issue.isBot) {
+      issueLogger.info(
+          `Skipping this $$type because its author is a bot and bots are exempt, see ${issueLogger.createOptionLink(
+              Option.ExemptBots
+          )} for more details`
+      );
+      IssuesProcessor._endIssueProcessing(issue);
+      return; // Don't process exempt issues
+    }
+
     // Ignore draft PR
     // Note that this check is so far below because it cost one read operation
     // So it's simply better to do all the stale checks which don't cost more operation before this one

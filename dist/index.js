@@ -62,7 +62,7 @@ const is_pull_request_1 = __nccwpck_require__(5400);
 const operations_1 = __nccwpck_require__(7957);
 class Issue {
     constructor(options, issue) {
-        var _a;
+        var _a, _b;
         this.operations = new operations_1.Operations();
         this._options = options;
         this.title = issue.title;
@@ -78,6 +78,7 @@ class Issue {
         this.askedForFeedback = (0, is_labeled_1.isLabeled)(this, this.feedbackLabel);
         this.markedStaleThisRun = false;
         this.user = typeof issue.user === 'string' ? issue.user : (_a = issue.user) === null || _a === void 0 ? void 0 : _a.login;
+        this.isBot = 'isBot' in issue ? issue.isBot : typeof issue.user === 'object' ? ((_b = issue.user) === null || _b === void 0 ? void 0 : _b.type) === 'Bot' : false;
     }
     get isPullRequest() {
         return (0, is_pull_request_1.isPullRequest)(this);
@@ -290,6 +291,12 @@ class IssuesProcessor {
             const isExemptAuthor = exemptAuthors.some(exemptAuthor => exemptAuthor === issue.user);
             if (isExemptAuthor) {
                 issueLogger.info(`Skipping this $$type because its author is an exempt author, see ${issueLogger.createOptionLink(option_1.Option.ExemptAuthors)} for more details`);
+                IssuesProcessor._endIssueProcessing(issue);
+                return; // Don't process exempt issues
+            }
+            const exemptBots = this.options.exemptBots;
+            if (exemptBots && issue.isBot) {
+                issueLogger.info(`Skipping this $$type because its author is a bot and bots are exempt, see ${issueLogger.createOptionLink(option_1.Option.ExemptBots)} for more details`);
                 IssuesProcessor._endIssueProcessing(issue);
                 return; // Don't process exempt issues
             }
@@ -1067,6 +1074,7 @@ var Option;
     Option["CloseIssueLabel"] = "close-issue-label";
     Option["ExemptIssueLabels"] = "exempt-issue-labels";
     Option["ExemptAuthors"] = "exempt-authors";
+    Option["ExemptBots"] = "exempt-bots";
     Option["StalePrLabel"] = "stale-pr-label";
     Option["ClosePrLabel"] = "close-pr-label";
     Option["ExemptLabels"] = "exempt-labels";
@@ -1376,6 +1384,7 @@ function _getAndValidateArgs() {
         exemptDraftPr: core.getInput('exempt-draft-pr') === 'true',
         exemptLabels: core.getInput('exempt-labels'),
         exemptAuthors: core.getInput('exempt-authors'),
+        exemptBots: core.getInput('exempt-bots') === 'true',
     };
     for (const numberInput of ['days-before-feedback']) {
         if (isNaN(parseFloat(core.getInput(numberInput)))) {

@@ -15,6 +15,7 @@ export interface IIssue {
   milestone?: IMilestone | null;
   assignees?: Assignee[] | null;
   user?: string;
+  isBot?: boolean;
 }
 
 export type OctokitIssue = components['schemas']['issue'];

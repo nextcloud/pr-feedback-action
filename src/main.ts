@@ -35,6 +35,7 @@ function _getAndValidateArgs(): IIssuesProcessorOptions {
     exemptDraftPr: core.getInput('exempt-draft-pr') === 'true',
     exemptLabels: core.getInput('exempt-labels'),
     exemptAuthors: core.getInput('exempt-authors'),
+    exemptBots: core.getInput('exempt-bots') === 'true',
   };
 
   for (const numberInput of ['days-before-feedback']) {

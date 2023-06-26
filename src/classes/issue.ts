@@ -10,6 +10,7 @@ import {Operations} from './operations';
 
 export class Issue implements IIssue {
   readonly user: string | undefined;
+  readonly isBot: boolean | undefined;
   readonly title: string;
   readonly number: number;
   created_at: IsoDateString;
@@ -43,6 +44,7 @@ export class Issue implements IIssue {
     this.askedForFeedback = isLabeled(this, this.feedbackLabel);
     this.markedStaleThisRun = false;
     this.user = typeof issue.user === 'string'? issue.user : issue.user?.login;
+    this.isBot = 'isBot' in issue?  issue.isBot : typeof issue.user === 'object'? issue.user?.type === 'Bot' : false
   }
 
   get isPullRequest(): boolean {

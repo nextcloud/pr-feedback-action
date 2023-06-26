@@ -12,4 +12,5 @@ export interface IIssuesProcessorOptions {
   exemptDraftPr: boolean;
   exemptLabels: string;
   exemptAuthors: string;
+  exemptBots: boolean;
 }

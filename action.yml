@@ -45,6 +45,10 @@ inputs:
     description: 'The authors which exempt a pull request from being asked for feedback. Separate multiple authors with commas (eg. "user1,user2").'
     default: ''
     required: false
+  exempt-bots:
+    description: 'Whether bots are exempt from being asked for feedback.'
+    default: ''
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'
