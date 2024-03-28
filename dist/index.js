@@ -360,8 +360,8 @@ class IssuesProcessor {
                 const issueResult = yield this.client.rest.issues.listForRepo({
                     owner: github_1.context.repo.owner,
                     repo: github_1.context.repo.repo,
-                    per_page: 100,
-                    direction: 'asc',
+                    per_page: 1000,
+                    direction: 'desc',
                     state: 'all',
                     page
                 });
@@ -629,7 +629,7 @@ class Logger {
         return (0, terminal_link_1.default)(name, link);
     }
     createOptionLink(option) {
-        return logger_service_1.LoggerService.magenta(this.createLink(option, `https://github.com/actions/stale#${option}`));
+        return logger_service_1.LoggerService.magenta(this.createLink(option, `https://github.com/marcelklehr/pr-feedback-action#${option}`));
     }
 }
 exports.Logger = Logger;

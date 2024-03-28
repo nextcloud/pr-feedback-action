@@ -349,8 +349,8 @@ export class IssuesProcessor {
       const issueResult = await this.client.rest.issues.listForRepo({
         owner: context.repo.owner,
         repo: context.repo.repo,
-        per_page: 100,
-        direction: 'asc',
+        per_page: 1000,
+        direction: 'desc',
         state: 'all',
         page
       });

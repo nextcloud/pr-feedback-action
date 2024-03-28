@@ -26,7 +26,7 @@ export class Logger {
 
   createOptionLink(option: Readonly<Option>): string {
     return LoggerService.magenta(
-      this.createLink(option, `https://github.com/actions/stale#${option}`)
+      this.createLink(option, `https://github.com/marcelklehr/pr-feedback-action#${option}`)
     );
   }
 }
