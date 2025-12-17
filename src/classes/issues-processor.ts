@@ -247,7 +247,10 @@ export class IssuesProcessor {
     }
 
     const exemptAuthors: string[] = wordsToList(this.options.exemptAuthors);
-    const isExemptAuthor = exemptAuthors.some(exemptAuthor => exemptAuthor === issue.user)
+    const isExemptAuthor = exemptAuthors.some(
+      exemptAuthor => exemptAuthor?.toLowerCase() === issue.user?.toLowerCase()
+    );
+
 
     if (isExemptAuthor) {
       issueLogger.info(
