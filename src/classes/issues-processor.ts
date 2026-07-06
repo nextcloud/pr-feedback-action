@@ -6,7 +6,6 @@ import {getHumanizedDate} from '../functions/dates/get-humanized-date';
 import {isDateMoreRecentThan} from '../functions/dates/is-date-more-recent-than';
 import {isValidDate} from '../functions/dates/is-valid-date';
 import {cleanLabel} from '../functions/clean-label';
-import {shouldMarkWhenStale} from '../functions/should-mark-when-stale';
 import {IComment} from '../interfaces/comment';
 import {IIssueEvent} from '../interfaces/issue-event';
 import {IIssuesProcessorOptions} from '../interfaces/issues-processor-options';
@@ -186,9 +185,6 @@ export class IssuesProcessor {
       `Days before feedback: ${LoggerService.cyan(daysBeforeFeedback)}`
     );
 
-    const shouldAskForFeedback: boolean =
-      shouldMarkWhenStale(daysBeforeFeedback);
-
     if (this.options.startDate) {
       const startDate: Date = new Date(this.options.startDate);
       const createdAt: Date = new Date(issue.created_at);
@@ -303,7 +299,7 @@ export class IssuesProcessor {
       if (shouldAskForFeedback) {
         issueLogger.info(
           `This $$type should be marked as stale based on the option ${issueLogger.createOptionLink(
-            this._getDaysBeforeFeedbackOptionName(issue)
+            this._getDaysBeforeFeedbackOptionName()
           )} (${LoggerService.cyan(daysBeforeFeedback)})`
         );
         await this._askForFeedback(issue, feedbackMessage, feedbackLabel);
@@ -313,7 +309,7 @@ export class IssuesProcessor {
       } else {
         issueLogger.info(
           `This $$type should not be marked as asking for feedback based on the option ${issueLogger.createOptionLink(
-            this._getDaysBeforeFeedbackOptionName(issue)
+            this._getDaysBeforeFeedbackOptionName()
           )} (${LoggerService.cyan(daysBeforeFeedback)})`
         );
       }
@@ -480,9 +476,7 @@ export class IssuesProcessor {
     issue.operations.consumeOperation();
   }
 
-  private _getDaysBeforeFeedbackOptionName(
-    issue: Readonly<Issue>
-  ): Option.DaysBeforeFeedback {
+  private _getDaysBeforeFeedbackOptionName(): Option.DaysBeforeFeedback {
     return Option.DaysBeforeFeedback;
   }
 }
