@@ -20,8 +20,8 @@ import {Statistics} from './statistics';
 import {LoggerService} from '../services/logger.service';
 import {OctokitIssue} from '../interfaces/issue';
 import {retry} from '@octokit/plugin-retry';
-import {wordsToList} from "../functions/words-to-list";
-import {isLabeled} from "../functions/is-labeled";
+import {wordsToList} from '../functions/words-to-list';
+import {isLabeled} from '../functions/is-labeled';
 
 /***
  * Handle processing of issues for staleness/closure.
@@ -233,14 +233,14 @@ export class IssuesProcessor {
     const exemptLabels: string[] = wordsToList(this.options.exemptLabels);
 
     const hasExemptLabel = exemptLabels.some((exemptLabel: Readonly<string>) =>
-        isLabeled(issue, exemptLabel)
+      isLabeled(issue, exemptLabel)
     );
 
     if (hasExemptLabel) {
       issueLogger.info(
-          `Skipping this $$type because it contains an exempt label, see ${issueLogger.createOptionLink(
-              Option.ExemptLabels
-          )} for more details`
+        `Skipping this $$type because it contains an exempt label, see ${issueLogger.createOptionLink(
+          Option.ExemptLabels
+        )} for more details`
       );
       IssuesProcessor._endIssueProcessing(issue);
       return; // Don't process exempt issues
@@ -251,12 +251,11 @@ export class IssuesProcessor {
       exemptAuthor => exemptAuthor?.toLowerCase() === issue.user?.toLowerCase()
     );
 
-
     if (isExemptAuthor) {
       issueLogger.info(
-          `Skipping this $$type because its author is an exempt author, see ${issueLogger.createOptionLink(
-              Option.ExemptAuthors
-          )} for more details`
+        `Skipping this $$type because its author is an exempt author, see ${issueLogger.createOptionLink(
+          Option.ExemptAuthors
+        )} for more details`
       );
       IssuesProcessor._endIssueProcessing(issue);
       return; // Don't process exempt issues
@@ -266,9 +265,9 @@ export class IssuesProcessor {
 
     if (exemptBots && issue.isBot) {
       issueLogger.info(
-          `Skipping this $$type because its author is a bot and bots are exempt, see ${issueLogger.createOptionLink(
-              Option.ExemptBots
-          )} for more details`
+        `Skipping this $$type because its author is a bot and bots are exempt, see ${issueLogger.createOptionLink(
+          Option.ExemptBots
+        )} for more details`
       );
       IssuesProcessor._endIssueProcessing(issue);
       return; // Don't process exempt issues
@@ -483,9 +482,7 @@ export class IssuesProcessor {
 
   private _getDaysBeforeFeedbackOptionName(
     issue: Readonly<Issue>
-  ):
-     | Option.DaysBeforeFeedback {
+  ): Option.DaysBeforeFeedback {
     return Option.DaysBeforeFeedback;
   }
-
 }

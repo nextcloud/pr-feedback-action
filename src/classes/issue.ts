@@ -43,8 +43,13 @@ export class Issue implements IIssue {
     this.assignees = issue.assignees || [];
     this.askedForFeedback = isLabeled(this, this.feedbackLabel);
     this.markedStaleThisRun = false;
-    this.user = typeof issue.user === 'string'? issue.user : issue.user?.login;
-    this.isBot = 'isBot' in issue?  issue.isBot : typeof issue.user === 'object'? issue.user?.type === 'Bot' : false
+    this.user = typeof issue.user === 'string' ? issue.user : issue.user?.login;
+    this.isBot =
+      'isBot' in issue
+        ? issue.isBot
+        : typeof issue.user === 'object'
+        ? issue.user?.type === 'Bot'
+        : false;
   }
 
   get isPullRequest(): boolean {
