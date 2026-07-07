@@ -1,5 +1,8 @@
 name: Licensed
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -12,4 +15,4 @@ on:
 jobs:
   call-licensed:
     name: Licensed
-    uses: actions/reusable-workflows/.github/workflows/licensed.yml@main
+    uses: actions/reusable-workflows/.github/workflows/licensed.yml@09976383aa8780d306ee271bd21bb77a54fad474 # main

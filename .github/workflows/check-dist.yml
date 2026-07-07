@@ -11,7 +11,10 @@ on:
       - '**.md'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   call-check-dist:
     name: Check dist/
-    uses: actions/reusable-workflows/.github/workflows/check-dist.yml@main
+    uses: actions/reusable-workflows/.github/workflows/check-dist.yml@09976383aa8780d306ee271bd21bb77a54fad474 # main

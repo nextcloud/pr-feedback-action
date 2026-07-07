@@ -1,5 +1,8 @@
 name: Update configuration files
 
+permissions:
+  contents: read
+
 on:
   schedule:
     - cron: '0 3 * * 0'
@@ -8,4 +11,4 @@ on:
 jobs:
   call-update-configuration-files:
     name: Update configuration files
-    uses: actions/reusable-workflows/.github/workflows/update-config-files.yml@main
+    uses: actions/reusable-workflows/.github/workflows/update-config-files.yml@09976383aa8780d306ee271bd21bb77a54fad474 # main

@@ -6,7 +6,6 @@ import {getHumanizedDate} from '../functions/dates/get-humanized-date';
 import {isDateMoreRecentThan} from '../functions/dates/is-date-more-recent-than';
 import {isValidDate} from '../functions/dates/is-valid-date';
 import {cleanLabel} from '../functions/clean-label';
-import {shouldMarkWhenStale} from '../functions/should-mark-when-stale';
 import {IComment} from '../interfaces/comment';
 import {IIssueEvent} from '../interfaces/issue-event';
 import {IIssuesProcessorOptions} from '../interfaces/issues-processor-options';
@@ -20,8 +19,8 @@ import {Statistics} from './statistics';
 import {LoggerService} from '../services/logger.service';
 import {OctokitIssue} from '../interfaces/issue';
 import {retry} from '@octokit/plugin-retry';
-import {wordsToList} from "../functions/words-to-list";
-import {isLabeled} from "../functions/is-labeled";
+import {wordsToList} from '../functions/words-to-list';
+import {isLabeled} from '../functions/is-labeled';
 
 /***
  * Handle processing of issues for staleness/closure.
@@ -186,9 +185,6 @@ export class IssuesProcessor {
       `Days before feedback: ${LoggerService.cyan(daysBeforeFeedback)}`
     );
 
-    const shouldAskForFeedback: boolean =
-      shouldMarkWhenStale(daysBeforeFeedback);
-
     if (this.options.startDate) {
       const startDate: Date = new Date(this.options.startDate);
       const createdAt: Date = new Date(issue.created_at);
@@ -233,14 +229,14 @@ export class IssuesProcessor {
     const exemptLabels: string[] = wordsToList(this.options.exemptLabels);
 
     const hasExemptLabel = exemptLabels.some((exemptLabel: Readonly<string>) =>
-        isLabeled(issue, exemptLabel)
+      isLabeled(issue, exemptLabel)
     );
 
     if (hasExemptLabel) {
       issueLogger.info(
-          `Skipping this $$type because it contains an exempt label, see ${issueLogger.createOptionLink(
-              Option.ExemptLabels
-          )} for more details`
+        `Skipping this $$type because it contains an exempt label, see ${issueLogger.createOptionLink(
+          Option.ExemptLabels
+        )} for more details`
       );
       IssuesProcessor._endIssueProcessing(issue);
       return; // Don't process exempt issues
@@ -251,12 +247,11 @@ export class IssuesProcessor {
       exemptAuthor => exemptAuthor?.toLowerCase() === issue.user?.toLowerCase()
     );
 
-
     if (isExemptAuthor) {
       issueLogger.info(
-          `Skipping this $$type because its author is an exempt author, see ${issueLogger.createOptionLink(
-              Option.ExemptAuthors
-          )} for more details`
+        `Skipping this $$type because its author is an exempt author, see ${issueLogger.createOptionLink(
+          Option.ExemptAuthors
+        )} for more details`
       );
       IssuesProcessor._endIssueProcessing(issue);
       return; // Don't process exempt issues
@@ -266,9 +261,9 @@ export class IssuesProcessor {
 
     if (exemptBots && issue.isBot) {
       issueLogger.info(
-          `Skipping this $$type because its author is a bot and bots are exempt, see ${issueLogger.createOptionLink(
-              Option.ExemptBots
-          )} for more details`
+        `Skipping this $$type because its author is a bot and bots are exempt, see ${issueLogger.createOptionLink(
+          Option.ExemptBots
+        )} for more details`
       );
       IssuesProcessor._endIssueProcessing(issue);
       return; // Don't process exempt issues
@@ -304,7 +299,7 @@ export class IssuesProcessor {
       if (shouldAskForFeedback) {
         issueLogger.info(
           `This $$type should be marked as stale based on the option ${issueLogger.createOptionLink(
-            this._getDaysBeforeFeedbackOptionName(issue)
+            this._getDaysBeforeFeedbackOptionName()
           )} (${LoggerService.cyan(daysBeforeFeedback)})`
         );
         await this._askForFeedback(issue, feedbackMessage, feedbackLabel);
@@ -314,7 +309,7 @@ export class IssuesProcessor {
       } else {
         issueLogger.info(
           `This $$type should not be marked as asking for feedback based on the option ${issueLogger.createOptionLink(
-            this._getDaysBeforeFeedbackOptionName(issue)
+            this._getDaysBeforeFeedbackOptionName()
           )} (${LoggerService.cyan(daysBeforeFeedback)})`
         );
       }
@@ -481,11 +476,7 @@ export class IssuesProcessor {
     issue.operations.consumeOperation();
   }
 
-  private _getDaysBeforeFeedbackOptionName(
-    issue: Readonly<Issue>
-  ):
-     | Option.DaysBeforeFeedback {
+  private _getDaysBeforeFeedbackOptionName(): Option.DaysBeforeFeedback {
     return Option.DaysBeforeFeedback;
   }
-
 }

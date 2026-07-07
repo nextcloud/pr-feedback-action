@@ -8,7 +8,10 @@ on:
   schedule:
     - cron: '0 3 * * 0'
 
+permissions:
+  contents: read
+
 jobs:
   call-codeQL-analysis:
     name: CodeQL analysis
-    uses: actions/reusable-workflows/.github/workflows/codeql-analysis.yml@main
+    uses: actions/reusable-workflows/.github/workflows/codeql-analysis.yml@09976383aa8780d306ee271bd21bb77a54fad474 # main
